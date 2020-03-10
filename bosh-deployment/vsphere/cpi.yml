@@ -1,0 +1,67 @@
+- name: cpi
+  path: /releases/-
+  type: replace
+  value:
+    name: bosh-vsphere-cpi
+    sha1: 3f017dbaf2e6b01a48da2f4eaf3fae44bbca8156
+    url: https://bosh.io/d/github.com/cloudfoundry/bosh-vsphere-cpi-release?v=53.0.8
+    version: 53.0.8
+- name: stemcell
+  path: /resource_pools/name=vms/stemcell?
+  type: replace
+  value:
+    sha1: e960011ed750cfbb34948f427b02b432ffae43f2
+    url: https://bosh-core-stemcells.s3-accelerate.amazonaws.com/621.59/bosh-stemcell-621.59-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+- path: /resource_pools/name=vms/cloud_properties?
+  type: replace
+  value:
+    cpu: 2
+    disk: 40000
+    ram: 4096
+- path: /networks/name=default/subnets/0/cloud_properties?
+  type: replace
+  value:
+    name: ((network_name))
+- path: /instance_groups/name=bosh/jobs/-
+  type: replace
+  value:
+    name: vsphere_cpi
+    release: bosh-vsphere-cpi
+- path: /instance_groups/name=bosh/properties/director/cpi_job?
+  type: replace
+  value: vsphere_cpi
+- path: /cloud_provider/template?
+  type: replace
+  value:
+    name: vsphere_cpi
+    release: bosh-vsphere-cpi
+- path: /instance_groups/name=bosh/properties/vcenter?
+  type: replace
+  value:
+    address: ((vcenter_ip))
+    datacenters:
+    - clusters:
+      - ((vcenter_cluster)): {}
+      datastore_pattern: ((vcenter_ds))
+      disk_path: ((vcenter_disks))
+      name: ((vcenter_dc))
+      persistent_datastore_pattern: ((vcenter_ds))
+      template_folder: ((vcenter_templates))
+      vm_folder: ((vcenter_vms))
+    password: ((vcenter_password))
+    user: ((vcenter_user))
+- path: /cloud_provider/properties/vcenter?
+  type: replace
+  value:
+    address: ((vcenter_ip))
+    datacenters:
+    - clusters:
+      - ((vcenter_cluster)): {}
+      datastore_pattern: ((vcenter_ds))
+      disk_path: ((vcenter_disks))
+      name: ((vcenter_dc))
+      persistent_datastore_pattern: ((vcenter_ds))
+      template_folder: ((vcenter_templates))
+      vm_folder: ((vcenter_vms))
+    password: ((vcenter_password))
+    user: ((vcenter_user))
